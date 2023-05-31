@@ -1,0 +1,44 @@
+version: '3'
+services:
+  mysql-db:
+    image: mysqldb-whatsapp:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: abc12345
+      MYSQL_DATABASE: whatsapp
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: abc12345
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - myablwhatsappbanking-network
+
+  node-app:
+    image: nodejs:may31
+    ports:
+      - 3000:3000
+    volumes:
+      - ./node-app:/app
+    depends_on:
+      - mysql-db
+    networks:
+      - myablwhatsappbanking-network
+
+  php-laravel:
+    image: php-laravel:latest
+    ports:
+      - 84:80
+    volumes:
+      - ./laravel-app:/var/www/html
+    depends_on:
+      - mysql-db
+    networks:
+      - myablwhatsappbanking-network
+
+networks:
+  myablwhatsappbanking-network:
+
+volumes:
+  mysql-data:
+  
